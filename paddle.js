@@ -11,7 +11,6 @@ class Paddle {
             this.x = width - this.w;
         }
         
-        
     }
     
     update() {
