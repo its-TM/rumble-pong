@@ -1,4 +1,4 @@
-# 🏓 Rumble Pong
+# 🕹️ Rumble Pong
 
 **Rumble Pong** is a powerup-enhanced retro-style Pong game built with HTML5, CSS, and JavaScript using the p5.js library. The game features classic two-player pong gameplay with an exciting twist—powerups that can freeze the ball, shrink paddles, and more!
 
