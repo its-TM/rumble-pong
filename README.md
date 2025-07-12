@@ -12,7 +12,6 @@
 
 ## 🗂 Project Structure
 rumble-pong/
-
 ├── Main Menu.html # Main menu page with navigation and sound toggle
 ├── pong.html # Main game implementation using p5.js
 ├── LICENSE
