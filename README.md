@@ -14,21 +14,13 @@
 rumble-pong/
 
 ├── Main Menu.html # Main menu page with navigation and sound toggle
-
 ├── pong.html # Main game implementation using p5.js
-
 ├── LICENSE
-
 ├── Data
-
     ├── music.mp3 # Background music
-    
     ├── volumeoff.png # Volume icon (off)
-    
     ├── volumeon.png # Volume icon (on)
-    
     ├── retro.mp4
-    
     └── ding.mp4
 
 ## 🚀 Getting Started
