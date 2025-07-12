@@ -4,7 +4,6 @@ class Paddle {
         this.w = 20;
         this.h = 100;
         this.ychange = 0;
-        
         if (isLeft) {
             this.x = this.w;
         } else {
