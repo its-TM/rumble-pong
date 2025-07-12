@@ -12,7 +12,7 @@
 
 ## 🗂 Project Structure
 
-''' rumble-pong/ 
+``` rumble-pong/ 
 ├── Main Menu.html # Main menu page with navigation and sound toggle
 ├── pong.html # Main game implementation using p5.js 
 ├── LICENSE 
@@ -21,7 +21,8 @@
     ├── volumeoff.png # Volume icon (off) 
     ├── volumeon.png # Volume icon (on) 
     ├── retro.mp4 
-    └── ding.mp4 '''
+    └── ding.mp4 
+```
 
 ## 🚀 Getting Started
 
