@@ -93,7 +93,7 @@
 </head>
 <body>
   <video autoplay loop id="bg-video">
-  <source src="retro.mp4" type="video/mp4" />
+  <source src="data/retro.mp4" type="video/mp4" />
   </video>
   <div class="menu-container">
     <h1>RUMBLE PONG</h1>
@@ -102,9 +102,9 @@
     <button class="menu-button" onclick="showHowToPlay()">❓ How to Play</button>
   </div>
 
-  <img src="volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
+  <img src="data/volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
 
-  <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="bg-music" src="data/music.mp3" loop></audio>
   <script>
     const music = document.getElementById("bg-music");
     const volumeBtn = document.getElementById("volumeBtn");
@@ -118,7 +118,7 @@
     volumeBtn.addEventListener("click", () => {
       isMuted = !isMuted;
       music.muted = isMuted;
-      volumeBtn.src = isMuted ? "volumeoff.png" : "volumeon.png";
+      volumeBtn.src = isMuted ? "data/volumeoff.png" : "data/volumeon.png";
     });
 
     function startGame() {
