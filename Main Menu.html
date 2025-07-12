@@ -11,14 +11,25 @@
         padding: 0;
         font-family: "Press Start 2P", cursive;
         margin: 0;
-        background: black url("bg2.png") no-repeat center center;
+        background: black no-repeat center center;
         background-size: cover; 
-        color: rgb(222, 9, 9);
+        color: rgb(217,69,59);
         position: relative;
         overflow: hidden;
         height: 100vh; 
     }
 
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100vw;
+      min-height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+      filter:blur(10px);
+    }
 
     .menu-container {
       text-align: center;
@@ -81,7 +92,9 @@
   </style>
 </head>
 <body>
-
+  <video autoplay loop id="bg-video">
+  <source src="retro.mp4" type="video/mp4" />
+  </video>
   <div class="menu-container">
     <h1>RUMBLE PONG</h1>
     <button class="menu-button" onclick="startGame()">▶ Play Game</button>
@@ -92,7 +105,6 @@
   <img src="volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
 
   <audio id="bg-music" src="music.mp3" loop></audio>
-
   <script>
     const music = document.getElementById("bg-music");
     const volumeBtn = document.getElementById("volumeBtn");
@@ -120,6 +132,7 @@
     function showHowToPlay() {
       alert("Use arrow keys to move the paddle. First to 10 wins!");
     }
+
   </script>
 </body>
 </html>
