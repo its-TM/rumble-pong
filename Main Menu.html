@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Main Menu</title>
+    <title>RUMBLE PONG - Home</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
-
     <style>
       body {
         margin: 0;
@@ -35,19 +34,23 @@
         text-shadow: 2px 2px #0051ff;
       }
 
-      .start-button {
+      .menu-button {
+        display: block;
+        margin: 20px auto;
         font-family: "Press Start 2P", cursive;
         padding: 12px 24px;
-        font-size: 21px;
+        font-size: 18px;
         color: #00ff00;
         border: 2px solid #00ff00;
-        cursor: pointer;
         background: transparent;
+        cursor: pointer;
         transition: transform 0.2s;
+        width: 260px;
       }
 
-      .start-button:hover {
+      .menu-button:hover {
         transform: scale(1.05);
+        background: rgba(0, 255, 0, 0.1);
       }
 
       .music-button {
@@ -65,11 +68,12 @@
 
       @media (max-width: 600px) {
         h1 {
-          font-size: 24px;
+          font-size: 28px;
         }
-        .start-button {
+        .menu-button {
           font-size: 12px;
-          padding: 8px 16px;
+          padding: 10px 18px;
+          width: 200px;
         }
         .music-button {
           font-size: 8px;
@@ -78,14 +82,16 @@
       }
     </style>
   </head>
-
   <body>
     <div class="menu-container">
       <h1>RUMBLE PONG</h1>
-      <button class="start-button" onclick="startGame()">Enter Game</button>
+      <button class="menu-button" onclick="startGame()">▶ Play Game</button>
+      <button class="menu-button" onclick="openSettings()">⚙ Settings</button>
+      <button class="menu-button" onclick="showHowToPlay()">❓ How to Play</button>
     </div>
+
     <button class="music-button" id="music-toggle" onclick="toggleMusic()">🔇 Music Off</button>
-    <audio id="bg-music" src="/Users/xdkof/Documents/WEB-D/osdchack/music.mp3" loop></audio>
+    <audio id="bg-music" src="music.mp3" loop></audio>
 
     <script>
       const music = document.getElementById("bg-music");
@@ -102,10 +108,10 @@
         }
         isPlaying = !isPlaying;
       }
-
       function startGame() {
-        window.location.href = "game.html";
+        window.location.href = "index.html"; 
       }
+      // function of settings and how to play is left, will do it once they are made.
     </script>
   </body>
 </html>
