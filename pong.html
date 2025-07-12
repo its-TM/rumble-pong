@@ -8,16 +8,41 @@
       html, body {
         margin: 0;
         padding: 0;
+        font-family: "Press Start 2P", cursive;
       }
       canvas {
         display: block;
+        margin: 0 auto;
+        border: 2px solid #00ff00;
+      }
+      .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-family: "Press Start 2P", cursive;
+        padding: 10px 14px;
+        font-size: 10px;
+        color: #00ff00;
+        background: black;
+        border: 2px solid #00ff00;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .back-button:hover {
+        background: rgba(0, 255, 0, 0.1);
+      }
+      body {
+        background: black;
+        color: white;
+        padding: 20px;
       }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
   </head>
-
   <body>
+    <a href="main-menu.html" class="back-button">← Back to Menu</a>
     <script>
       let leftscore = 0;
       let rightscore = 0;
@@ -25,6 +50,12 @@
       let left;
       let right;
       let ding;
+      let audioEnabled = false;
+      let gameStarted = false;
+      let showStartScreen = true;
+
+      // Simple beep sound as base64 data URL (avoids CORS issues)
+      const beepSound = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaATCP1+/PdSgELoDO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaATCP1+/PdSgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 
       class Paddle {
           constructor(isLeft) {
@@ -121,19 +152,15 @@
               }
               
               if (this.x - this.r > width) {
-                  // Play sound with error handling
-                  if (ding && ding.isLoaded()) {
-                      ding.play();
-                  }
+                  // Play beep sound
+                  playBeep();
                   leftscore++;
                   this.reset();
               }
               
               if (this.x + this.r < 0) {
-                  // Play sound with error handling
-                  if (ding && ding.isLoaded()) {
-                      ding.play();
-                  }
+                  // Play beep sound
+                  playBeep();
                   rightscore++;
                   this.reset();
               }
@@ -145,22 +172,49 @@
           }
       }
 
+      function playBeep() {
+          if (audioEnabled) {
+              try {
+                  const audio = new Audio(beepSound);
+                  audio.volume = 0.3;
+                  audio.play().catch(e => console.log("Audio play failed:", e));
+              } catch (e) {
+                  console.log("Audio creation failed:", e);
+              }
+          }
+      }
+
       function setup() {
           createCanvas(600, 400);
-          soundFormats('mp3', 'ogg');
-          // Load sound with error handling
-          ding = loadSound('ding.mp3', 
-              () => console.log("Sound loaded successfully"),
-              () => console.log("Sound failed to load")
-          );
           
           puck = new Puck();
           left = new Paddle(true);
           right = new Paddle(false);
+          
+          // Auto-start after 2 seconds
+          setTimeout(() => {
+              if (showStartScreen) {
+                  showStartScreen = false;
+                  gameStarted = true;
+                  audioEnabled = true;
+              }
+          }, 2000);
       }
 
       function draw() {
           background(0);
+          
+          // Show start message if game hasn't started
+          if (showStartScreen) {
+              fill(255);
+              textAlign(CENTER);
+              textSize(24);
+              text("Get Ready!", width/2, height/2 - 50);
+              textSize(16);
+              text("Controls:", width/2, height/2);
+              text("Player 1: W/S    Player 2: I/K", width/2, height/2 + 25);
+              return;
+          }
           
           puck.checkPaddleRight(right);
           puck.checkPaddleLeft(left);
@@ -175,19 +229,22 @@
           puck.show();
           
           fill(255);
+          textAlign(LEFT);
           textSize(32);
           text(leftscore, 32, 40);
           text(rightscore, width-64, 40);
       }
 
       function keyReleased() {
-          left.move(0);
-          right.move(0);
+          if (gameStarted) {
+              left.move(0);
+              right.move(0);
+          }
       }
 
       function keyPressed() {
-          console.log(key);
-          // Convert to uppercase for consistent checking
+          if (!gameStarted) return;
+          
           let upperKey = key.toUpperCase();
           
           if (upperKey == 'W') {
@@ -200,6 +257,14 @@
               right.move(-10);
           } else if (upperKey == 'K') {
               right.move(10);
+          }
+      }
+
+      function mousePressed() {
+          if (showStartScreen) {
+              showStartScreen = false;
+              gameStarted = true;
+              audioEnabled = true;
           }
       }
     </script>
