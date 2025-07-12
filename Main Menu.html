@@ -45,7 +45,8 @@
         background: transparent;
         cursor: pointer;
         transition: transform 0.2s;
-        width: 260px;
+        width: 300px; /* Increased from 260px to prevent line break */
+        white-space: nowrap; /* Ensures text stays on one line */
       }
 
       .menu-button:hover {
@@ -108,10 +109,11 @@
         }
         isPlaying = !isPlaying;
       }
+
       function startGame() {
-        window.location.href = "index.html"; 
+        window.location.href = "index.html";
       }
-      // function of settings and how to play is left, will do it once they are made.
+      
     </script>
   </body>
 </html>
