@@ -11,7 +11,7 @@
         padding: 0;
         font-family: "Press Start 2P", cursive;
         margin: 0;
-        background: black no-repeat center center;
+        background: transparent no-repeat center center;
         background-size: cover; 
         color: rgb(217,69,59);
         position: relative;
@@ -20,15 +20,15 @@
     }
 
     #bg-video {
-      position: fixed;
+      position: relative;
       top: 0;
       left: 0;
-      min-width: 100vw;
-      min-height: 100vh;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       z-index: -1;
       pointer-events: none;
-      filter:blur(10px);
+      filter: blur(20px);
     }
 
     .menu-container {
@@ -92,8 +92,8 @@
   </style>
 </head>
 <body>
-  <video autoplay loop id="bg-video">
-  <source src="data/retro.mp4" type="video/mp4" />
+  <video autoplay loop muted playsinline id="bg-video">
+    <source src="data/retro.mp4" type="video/mp4" />
   </video>
   <div class="menu-container">
     <h1>RUMBLE PONG</h1>
@@ -105,7 +105,9 @@
   <img src="data/volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
 
   <audio id="bg-music" src="data/music.mp3" loop></audio>
+ 
   <script>
+    
     const music = document.getElementById("bg-music");
     const volumeBtn = document.getElementById("volumeBtn");
 
@@ -119,6 +121,12 @@
       isMuted = !isMuted;
       music.muted = isMuted;
       volumeBtn.src = isMuted ? "data/volumeoff.png" : "data/volumeon.png";
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+    const bgVideo = document.getElementById("bg-video");
+    bgVideo.load(); // Forces reload of video
+    bgVideo.play().catch(err => console.log("Video play blocked on reload:", err));
     });
 
     function startGame() {
