@@ -5,7 +5,7 @@
 ## 🎮 Features
 
 - ‼️ Classic two-player pong gameplay
-- ⚡ Powerups like Freeze, Fireball, and more (Play to Find 'em all)
+- ⚡ Powerups like Freeze, Fireball, and more (Play to find 'em all 😜)
 - 🔊 Retro-styled sound and music
 - ⚙️ Stylish main menu with volume toggle
 - 🖥 Responsive canvas scaling for various screen sizes
@@ -64,6 +64,7 @@ No setup required! Just make sure you have a browser that supports HTML5 and Jav
 
 ## 🕹 Controls (Can be changed from settings page)
 
+|--------|--------------|-----------|
 | Player | Action       | Key       |
 |--------|--------------|-----------|
 | P1     | Move Up      | `W`       |
@@ -72,6 +73,7 @@ No setup required! Just make sure you have a browser that supports HTML5 and Jav
 | P2     | Move Up      | `I`       |
 | P2     | Move Down    | `K`       |
 | P2     | Use Powerup  | `P`       |
+|--------|--------------|-----------|
 
 ## 🛠 Built With
 
