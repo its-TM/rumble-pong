@@ -12,16 +12,29 @@
 
 ## 🗂 Project Structure
 
-``` rumble-pong/ 
-├── Main Menu.html # Main menu page with navigation and sound toggle
-├── pong.html # Main game implementation using p5.js 
-├── LICENSE 
-├── 📁Data 
-    ├── music.mp3 # Background music 
-    ├── volumeoff.png # Volume icon (off) 
-    ├── volumeon.png # Volume icon (on) 
-    ├── retro.mp4 
-    └── ding.mp3 
+```
+rumble-pong/
+├── Main Menu.html         # Main menu page with navigation and sound toggle
+├── pong.html              # Main game implementation using p5.js
+├── settings.html          # Settings page for controls and preferences
+├── LICENSE
+├── 📁Data
+│   ├── music.mp3          # Background music
+│   ├── volumeoff.png      # Volume icon (off)
+│   ├── volumeon.png       # Volume icon (on)
+│   ├── retro.mp4
+│   ├── ding.mp3
+│   └── powerup-icons/     # Folder for powerup icons
+│       ├── freeze.png
+│       ├── fireball.png
+│       └── shrink.png
+├── 📁js
+│   ├── pong.js            # Main game logic
+│   ├── menu.js            # Menu interactions
+│   └── settings.js        # Settings logic
+├── 📁css
+│   ├── style.css          # Main styles
+│   └── menu.css           # Menu styles
 ```
 
 ## 🚀 Getting Started
