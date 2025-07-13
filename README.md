@@ -1,13 +1,13 @@
 # 🕹️ Rumble Pong
 
-**Rumble Pong** is a powerup-enhanced retro-style Pong game built with HTML5, CSS, and JavaScript using the p5.js library. The game features classic two-player pong gameplay with an exciting twist—powerups that can freeze the ball, shrink paddles, and more!
+**Rumble Pong** is a retro-style Pong game with a chaotic twist, which features the classic two-player pong gameplay with an exciting twist—powerups that can freeze the ball, shrink paddles, and more!
 
 ## 🎮 Features
 
-- 🎮 Classic two-player pong gameplay
+- ‼️ Classic two-player pong gameplay
 - ⚡ Powerups like Freeze, Fireball, and more (Play to Find 'em all)
 - 🔊 Retro-styled sound and music
-- 🕹 Stylish main menu with volume toggle
+- ⚙️ Stylish main menu with volume toggle
 - 🖥 Responsive canvas scaling for various screen sizes
 
 ## 🗂 Project Structure
@@ -21,7 +21,7 @@
     ├── volumeoff.png # Volume icon (off) 
     ├── volumeon.png # Volume icon (on) 
     ├── retro.mp4 
-    └── ding.mp4 
+    └── ding.mp3 
 ```
 
 ## 🚀 Getting Started
@@ -49,17 +49,6 @@ No setup required! Just make sure you have a browser that supports HTML5 and Jav
 | P2     | Move Down    | `K`       |
 | P2     | Use Powerup  | `P`       |
 
-## 🧠 Powerups
-
-Powerups appear every 8 seconds and include:
-- ❄️ **Freeze**: Freezes the ball temporarily.
-- 🔥 **Fireball**: Doubles the ball’s speed.
-- 📏 **XL**: Increases your paddle size.
-- 🔽 **Mini**: Shrinks opponent’s paddle.
-- 🧹 **Magic**: Changes trajectory and speed of the ball. 
-- ⌨️ **Broken Keyboard**: Inverts the opponent's controls.
-- 🧲 **Force Field**: Creates a shield in front of your paddle.
-
 ## 🛠 Built With
 
 - [p5.js](https://p5js.org/) - JavaScript library for creative coding
@@ -71,7 +60,7 @@ This project is open source under the [MIT License](LICENSE).
 
 ## 🙌 Acknowledgments
 
-- Inspired by classic Pong and Rocket League. 
+- Inspired by classic Pong and Rocket League™️. 
 - Fonts and icons by [Google Fonts](https://fonts.google.com/specimen/Press+Start+2P) and free icon resources.
 
 ---
