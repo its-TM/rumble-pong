@@ -103,15 +103,19 @@
     let leftOriginalHeight = 100; // Store original height
     let rightOriginalHeight = 100; // Store original height
     let powerupImages = {};
+    let powerupSounds = {};
 
     const POWERUP_TYPES = ['freeze', 'fireball', 'xl', 'mini', 'magic', 'forcefield', 'brokenKeyboard'];
     const POWERUP_COOLDOWN_DURATION = 8000; // 8 seconds before a new powerup is given
-    const POWERUP_EFFECT_DURATION = 3000; // 3 seconds for most effects (used for freeze, fireball, xl, mini)
+    const POWERUP_EFFECT_DURATION = 3000; // 3 seconds for most effects (used for freeze, xl, mini)
+    const FIREBALL_DURATION = 5000;
 
     const GAME_WIDTH = 800;
     const GAME_HEIGHT = 600;
     let scaleFactor = 1;
     let retroFont; // Declare retroFont globally
+    let hitPaddleSound;
+    let hitWallSound;
 
     // Load powerup images (placeholder names)
     function preload() {
@@ -122,6 +126,19 @@
       goalSound = loadSound("/data/sfx/goal");
       countdown = loadSound("/data/sfx/countdown");
       countdown.setVolume(0.5);
+      hitPaddleSound = loadSound("/data/sfx/hit_paddle");
+      hitWallSound = loadSound("/data/sfx/hit_wall");
+      hitPaddleSound.setVolume(0.5);
+      hitPaddleSound.setVolume(0.5);
+
+      powerupSounds.freeze = loadSound("/data/sfx/freeze");
+      powerupSounds.fireball = loadSound("/data/sfx/fireball");
+      powerupSounds.xl = loadSound("/data/sfx/xl");
+      powerupSounds.mini = loadSound("/data/sfx/mini");
+      powerupSounds.magic = loadSound("/data/sfx/magic");
+      powerupSounds.forcefield = loadSound("/data/sfx/forcefield");
+      powerupSounds.brokenKeyboard = loadSound("/data/sfx/brokenkeyboard");
+
       powerupImages.freeze = null; // freeze.png
       powerupImages.fireball = null; // fireball.png
       powerupImages.xl = null; // xl.png
@@ -211,14 +228,17 @@
             ballSpeedMultiplier = Math.max(ballSpeedMultiplier, 1.5);
           }
         }
-        
-        this.x += this.xspeed * ballSpeedMultiplier;
-        this.y += this.yspeed * ballSpeedMultiplier;
+        let currentSpeedMultiplier = ballSpeedMultiplier;
+        this.x += this.xspeed * currentSpeedMultiplier;
+        this.y += this.yspeed * currentSpeedMultiplier;
       }
 }
 
       edges() {
-        if (this.y < 0 || this.y > GAME_HEIGHT) this.yspeed *= -1;
+        if (this.y < 0 || this.y > GAME_HEIGHT) {
+          this.yspeed *= -1;
+          hitWallSound.play();
+        }
 
         // Check for goal conditions
         if (this.x - this.r > GAME_WIDTH) {
@@ -248,6 +268,7 @@
 
           // Prevent ball from sticking to paddle
           this.x = p.x < GAME_WIDTH / 2 ? p.x + p.w / 2 + this.r : p.x - p.w / 2 - this.r;
+          hitPaddleSound.play();
         }
       }
 
@@ -434,14 +455,18 @@
       let currentTime = millis();
       
       if (player === 'left' && leftStoredPowerup) {
+        if (powerupSounds[leftStoredPowerup]) {
+          powerupSounds[leftStoredPowerup].play();
+        }
+
         switch (leftStoredPowerup) {
           case 'freeze':
             ballFrozen = true;
             ballFrozenEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'fireball':
-            ballSpeedMultiplier = 2;
-            ballFrozenEndTime = currentTime + POWERUP_EFFECT_DURATION; // Use same timer for simplicity
+            ballSpeedMultiplier = 2.5;
+            ballFrozenEndTime = currentTime + FIREBALL_DURATION;
             break;
           case 'xl':
             left.resize(left.originalH * 1.5); // Make left paddle 50% larger
@@ -468,6 +493,10 @@
         }
         leftStoredPowerup = null; // Powerup consumed
       } else if (player === 'right' && rightStoredPowerup) {
+      if (powerupSounds[rightStoredPowerup]) {
+        powerupSounds[rightStoredPowerup].play();
+      }
+
         switch (rightStoredPowerup) {
           case 'freeze':
             ballFrozen = true;
@@ -593,7 +622,7 @@
         let seconds = Math.max(0, Math.ceil(timeLeft / 1000));
         textAlign(CENTER);
         textSize(10);
-        text("Ball Frozen: " + seconds + "s", GAME_WIDTH / 2, GAME_HEIGHT - 50);
+        text("Time resumes after: " + seconds + "s", GAME_WIDTH / 2, GAME_HEIGHT - 50);
       } else if (ballSpeedMultiplier > 1 && !magicActive) {
         let timeLeft = ballFrozenEndTime - currentTime; // Re-using for fireball duration
         let seconds = Math.max(0, Math.ceil(timeLeft / 1000));
