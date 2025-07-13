@@ -119,8 +119,8 @@
       // For now, we'll create placeholder colored rectangles
       soundFormats('mp3', 'ogg');
       retroFont = loadFont('/data/PressStart2p.ttf');
-      goalSound = loadSound("/data/goal");
-      countdown = loadSound("/data/countdown");
+      goalSound = loadSound("/data/sfx/goal");
+      countdown = loadSound("/data/sfx/countdown");
       countdown.setVolume(0.5);
       powerupImages.freeze = null; // freeze.png
       powerupImages.fireball = null; // fireball.png
@@ -531,10 +531,10 @@
       fill(255);
       textAlign(LEFT);
       textSize(32);
-      text(leftscore, 300, 40);
-
+      text(leftscore, 350, 40);
+      text("-", 390, 40);
       textAlign(RIGHT);
-      text(rightscore, GAME_WIDTH - 300, 40);
+      text(rightscore, 467, 40);
 
       // Draw powerup icons for each player
       drawPowerupIcon(leftStoredPowerup, 60, 100, 'left');
@@ -764,7 +764,7 @@
           setTimeout(() => {
             showStartScreen = false;
             gameStarted = true;
-          }, 4000); // 4 seconds for the countdown
+          }, 3000); // 4 seconds for the countdown
         }
         // Prevent multiple plays if user clicks rapidly
         return;
