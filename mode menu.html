@@ -97,9 +97,10 @@
   </video>
   <div class="menu-container">
     <h1>RUMBLE PONG</h1>
-    <button class="menu-button" onclick="startGame()">▶ Play Game</button>
-    <button class="menu-button" onclick="openSettings()">⚙ Settings</button>
-    <button class="menu-button" onclick="showHowToPlay()">❓ How to Play</button>
+    <button class="menu-button" onclick="standard()">Standard </button>
+    <button class="menu-button" onclick="blitz()">Blitz </button>
+    <button class="menu-button" onclick="endless()">Endless</button>
+    <button class="menu-button" onclick="back()">⏪ Back to menu</button>
   </div>
 
   <img src="data/volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
@@ -129,16 +130,20 @@
     bgVideo.play().catch(err => console.log("Video play blocked on reload:", err));
     });
 
-    function startGame() {
-      window.location.href = "mode menu.html";
+    function standard() {
+        window.location.href = "standard.html";
     }
 
-    function openSettings() {
-      window.location.href = "settings.html";
+    function blitz() {
+        window.location.href = "blitz.html";
     }
 
-    function showHowToPlay() {
-      window.location.href = "how_to_play.html";
+    function endless() {
+      window.location.href = "endless.html";
+    }
+
+    function back(){
+        window.location.href = "Main Menu.html";
     }
 
   </script>

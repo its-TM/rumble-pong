@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RUMBLE PONG - Home</title>
+  <title>RUMBLE PONG - Settings</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
@@ -65,6 +65,16 @@
       background: rgba(0, 255, 0, 0.1);
     }
 
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 90px;
+      height: 90px;
+      cursor: pointer;
+      image-rendering: auto;
+    }
+
     .volume-button {
       position: absolute;
       top: 20px;
@@ -75,19 +85,27 @@
       image-rendering: auto;
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 28px;
-      }
-      .menu-button {
-        font-size: 12px;
-        padding: 10px 18px;
-        width: 200px;
-      }
-      .volume-button {
-        width: 60px;
-        height: 60px;
-      }
+    .settings-option {
+      margin: 30px 0;
+      color: #00ff00;
+    }
+
+    .slider {
+      width: 80%;
+      margin: 20px auto;
+      -webkit-appearance: none;
+      height: 10px;
+      background: #333;
+      outline: none;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #00ff00;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -95,21 +113,27 @@
   <video autoplay loop muted playsinline id="bg-video">
     <source src="data/retro.mp4" type="video/mp4" />
   </video>
-  <div class="menu-container">
-    <h1>RUMBLE PONG</h1>
-    <button class="menu-button" onclick="startGame()">▶ Play Game</button>
-    <button class="menu-button" onclick="openSettings()">⚙ Settings</button>
-    <button class="menu-button" onclick="showHowToPlay()">❓ How to Play</button>
-  </div>
-
+  
+  <img src="data/back.png" class="back-button" alt="Back" onclick="goBack()" />
   <img src="data/volumeoff.png" id="volumeBtn" class="volume-button" alt="Toggle Volume" />
+
+  <div class="menu-container">
+    <h1>SETTINGS</h1>
+    
+    <div class="settings-option">
+      <label for="volume-slider">VOLUME CONTROL</label>
+      <input type="range" id="volume-slider" class="slider" min="0" max="1" step="0.1" value="1">
+    </div>
+    
+    <button class="menu-button" onclick="saveSettings()">SAVE SETTINGS</button>
+  </div>
 
   <audio id="bg-music" src="data/music.mp3" loop></audio>
  
   <script>
-    
     const music = document.getElementById("bg-music");
     const volumeBtn = document.getElementById("volumeBtn");
+    const volumeSlider = document.getElementById("volume-slider");
 
     let isMuted = true;
 
@@ -123,24 +147,32 @@
       volumeBtn.src = isMuted ? "data/volumeoff.png" : "data/volumeon.png";
     });
 
-    window.addEventListener("DOMContentLoaded", () => {
-    const bgVideo = document.getElementById("bg-video");
-    bgVideo.load(); // Forces reload of video
-    bgVideo.play().catch(err => console.log("Video play blocked on reload:", err));
+    volumeSlider.addEventListener("input", (e) => {
+      music.volume = e.target.value;
     });
 
-    function startGame() {
-      window.location.href = "mode menu.html";
+    window.addEventListener("DOMContentLoaded", () => {
+      const bgVideo = document.getElementById("bg-video");
+      bgVideo.load();
+      bgVideo.play().catch(err => console.log("Video play blocked on reload:", err));
+      
+      // Load saved volume
+      const savedVolume = localStorage.getItem('volume');
+      if (savedVolume) {
+        music.volume = savedVolume;
+        volumeSlider.value = savedVolume;
+      }
+    });
+
+    function goBack() {
+      window.location.href = "Main Menu.html";
     }
 
-    function openSettings() {
-      window.location.href = "settings.html";
+    function saveSettings() {
+      localStorage.setItem('volume', music.volume);
+      alert("Settings saved!");
+      goBack();
     }
-
-    function showHowToPlay() {
-      window.location.href = "how_to_play.html";
-    }
-
   </script>
 </body>
 </html>

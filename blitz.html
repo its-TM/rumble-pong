@@ -71,56 +71,52 @@
     let canvas;
     let countdownStarted = false;
     
-    // Power-up variables for each player
-    let leftStoredPowerup = null; // Stores the powerup for player 1
-    let rightStoredPowerup = null; // Stores the powerup for player 2
-    let leftPowerupCooldownEnd = 0; // When player 1 can get a new powerup
-    let rightPowerupCooldownEnd = 0; // When player 2 can get a new powerup
+    let leftStoredPowerup = null;
+    let rightStoredPowerup = null;
+    let leftPowerupCooldownEnd = 0;
+    let rightPowerupCooldownEnd = 0;
 
-    // Existing power-up effect tracking
     let leftPowerupActive = false;
     let rightPowerupActive = false;
-    let leftPowerupEffectEndTime = 0; // Changed name for clarity
-    let rightPowerupEffectEndTime = 0; // Changed name for clarity
+    let leftPowerupEffectEndTime = 0;
+    let rightPowerupEffectEndTime = 0;
     let ballFrozen = false;
     let ballFrozenEndTime = 0;
     let ballSpeedMultiplier = 1;
+    let endgame = false;
+    let winner = null;
 
-    // New Power-up variables
     let magicActive = false;
     let magicEffectEndTime = 0;
-    const MAGIC_DURATION = 5000; // 5 seconds
+    const MAGIC_DURATION = 5000;
 
     let forceFieldActive = { left: false, right: false };
     let forceFieldEffectEndTime = { left: 0, right: 0 };
-    const FORCE_FIELD_DURATION = 4000; // 4 seconds
+    const FORCE_FIELD_DURATION = 4000;
 
-    let brokenKeyboardActive = { left: false, right: false }; // Tracks if the *other* player's controls are reversed
+    let brokenKeyboardActive = { left: false, right: false };
     let brokenKeyboardEffectEndTime = { left: 0, right: 0 };
-    const BROKEN_KEYBOARD_DURATION = 5000; // 5 seconds
+    const BROKEN_KEYBOARD_DURATION = 5000;
 
 
-    let leftOriginalHeight = 100; // Store original height
-    let rightOriginalHeight = 100; // Store original height
+    let leftOriginalHeight = 100;
+    let rightOriginalHeight = 100;
     let powerupImages = {};
     let powerupSounds = {};
 
     const POWERUP_TYPES = ['freeze', 'fireball', 'xl', 'mini', 'magic', 'forcefield', 'brokenKeyboard'];
-    const POWERUP_COOLDOWN_DURATION = 8000; // 8 seconds before a new powerup is given
-    const POWERUP_EFFECT_DURATION = 3000; // 3 seconds for most effects (used for freeze, xl, mini)
+    const POWERUP_COOLDOWN_DURATION = 8000;
+    const POWERUP_EFFECT_DURATION = 3000;
     const FIREBALL_DURATION = 5000;
 
     const GAME_WIDTH = 800;
     const GAME_HEIGHT = 600;
     let scaleFactor = 1;
-    let retroFont; // Declare retroFont globally
+    let retroFont;
     let hitPaddleSound;
     let hitWallSound;
 
-    // Load powerup images (placeholder names)
     function preload() {
-      // Note: These would be actual image files in a real implementation
-      // For now, we'll create placeholder colored rectangles
       soundFormats('mp3', 'ogg');
       retroFont = loadFont('/data/PressStart2p.ttf');
       goalSound = loadSound("/data/sfx/goal");
@@ -139,20 +135,20 @@
       powerupSounds.forcefield = loadSound("/data/sfx/forcefield");
       powerupSounds.brokenKeyboard = loadSound("/data/sfx/brokenkeyboard");
 
-      powerupImages.freeze = null; // freeze.png
-      powerupImages.fireball = null; // fireball.png
-      powerupImages.xl = null; // xl.png
-      powerupImages.mini = null; // mini.png
-      powerupImages.magic = null; // magic.png
-      powerupImages.forcefield = null; // forcefield.png
-      powerupImages.brokenKeyboard = null; // brokenKeyboard.png
+      powerupImages.freeze = loadImage("/data/icons/freeze.png");
+      powerupImages.fireball = loadImage("/data/icons/fireball.png");
+      powerupImages.xl = loadImage("/data/icons/xl.png");
+      powerupImages.mini = loadImage("/data/icons/mini.png");
+      powerupImages.magic = loadImage("/data/icons/magic.png");
+      powerupImages.forcefield = loadImage("/data/icons/forcefield.png");
+      powerupImages.brokenKeyboard = loadImage("/data/icons/brokenKeyboard.png");
     }
 
     class Paddle {
       constructor(isLeft) {
         this.w = 20;
         this.h = 100;
-        this.originalH = 100; // Store initial height
+        this.originalH = 100;
         this.y = GAME_HEIGHT / 2;
         this.ychange = 0;
         this.x = isLeft ? this.w : GAME_WIDTH - this.w;
@@ -197,9 +193,9 @@
         this.xspeed = 5 * cos(angle);
         this.yspeed = 5 * sin(angle);
         if (xyz === 1) this.xspeed *= -1;
-        ballSpeedMultiplier = 1; // Reset ball speed
-        ballFrozen = false; // Ensure ball is unfrozen on reset
-        magicActive = false; // Ensure magic is off on reset
+        ballSpeedMultiplier = 1;
+        ballFrozen = false;
+        magicActive = false;
       }
       
       update() {
@@ -208,12 +204,10 @@
         if (magicActive) {
           const currTime = millis();
           
-          // Initialize lastAngleChange if it doesn't exist
           if (!this.lastAngleChange) {
             this.lastAngleChange = currTime;
           }
           
-          // Check if 0.5 seconds (500ms) have passed
           if (currTime - this.lastAngleChange >= 600) {
             let newAngle = random(0, 2*PI);
             let currentSpeed = sqrt(this.xspeed * this.xspeed + this.yspeed * this.yspeed);
@@ -223,16 +217,15 @@
             if (this.xspeed > 0 && this.x > GAME_WIDTH / 2) this.xspeed *= -1;
             if (this.xspeed < 0 && this.x < GAME_WIDTH / 2) this.xspeed *= -1;
             
-            // Update the last angle change time
             this.lastAngleChange = currTime;
             ballSpeedMultiplier = Math.max(ballSpeedMultiplier, 1.5);
           }
         }
-        let currentSpeedMultiplier = ballSpeedMultiplier;
+        let currentSpeedMultiplier = 1.5*ballSpeedMultiplier;
         this.x += this.xspeed * currentSpeedMultiplier;
         this.y += this.yspeed * currentSpeedMultiplier;
       }
-}
+    }
 
       edges() {
         if (this.y < 0 || this.y > GAME_HEIGHT) {
@@ -240,19 +233,30 @@
           hitWallSound.play();
         }
 
-        // Check for goal conditions
         if (this.x - this.r > GAME_WIDTH) {
           leftscore++;
-          goalSound.play(); // Play sound on goal
+          if(leftscore==5){
+            endgame=true;
+            winner = 'right';
+          } 
+          if (audioEnabled) {
+            goalSound.play(); // Play sound on goal
+          }
           this.reset(1);
         }
         if (this.x + this.r < 0) {
           rightscore++;
-          goalSound.play(); // Play sound on goal
+          if(rightscore==5){
+            endgame=true;
+            winner = 'left';
+          }
+          if (audioEnabled) {
+            goalSound.play(); // Play sound on goal
+          }
           this.reset(2);
         }
-      }
 
+      }
       checkPaddle(p) {
         if (
           this.y - this.r < p.y + p.h / 2 &&
@@ -260,13 +264,11 @@
           ((this.x - this.r < p.x + p.w / 2 && this.x > p.x) ||
            (this.x + this.r > p.x - p.w / 2 && this.x < p.x))
         ) {
-          // Calculate angle based on where it hits the paddle
           let diff = this.y - (p.y - p.h / 2);
           let angle = map(diff, 0, p.h, p.x < GAME_WIDTH / 2 ? -PI / 4 : (5 * PI) / 4, p.x < GAME_WIDTH / 2 ? PI / 4 : (3 * PI) / 4);
           this.xspeed = 5 * cos(angle);
           this.yspeed = 5 * sin(angle);
 
-          // Prevent ball from sticking to paddle
           this.x = p.x < GAME_WIDTH / 2 ? p.x + p.w / 2 + this.r : p.x - p.w / 2 - this.r;
           hitPaddleSound.play();
         }
@@ -275,40 +277,30 @@
       checkForceField(player) {
         let fieldX, fieldY, fieldRadius;
         if (player === 'left') {
-          fieldX = left.x + left.w / 2 + 50; // Position the arc in front of the paddle
+          fieldX = left.x + left.w / 2 + 50;
           fieldY = left.y;
           fieldRadius = 70;
-          // Check if ball is within the arc's X range
           if (this.x + this.r > left.x + left.w / 2 && this.x - this.r < fieldX + fieldRadius) {
-            // Check approximate collision with the arc
             let distToCenter = dist(this.x, this.y, fieldX, fieldY);
             if (distToCenter < fieldRadius + this.r && distToCenter > fieldRadius - this.r) {
-              // Calculate angle from center of arc to ball
               let angleToBall = atan2(this.y - fieldY, this.x - fieldX);
-              // Only bounce if ball is moving towards the field and within the arc's "front"
               if (this.xspeed < 0 && angleToBall > -PI/2 && angleToBall < PI/2) {
-                this.xspeed *= -1; // Reverse X direction
-                // Optional: Adjust Y speed based on hit point on the arc
-                this.yspeed = (this.y - fieldY) * 0.1; // Example, can be more sophisticated
+                this.xspeed *= -1;
+                this.yspeed = (this.y - fieldY) * 0.1;
               }
             }
           }
         } else if (player === 'right') {
-          fieldX = right.x - right.w / 2 - 50; // Position the arc in front of the paddle
+          fieldX = right.x - right.w / 2 - 50;
           fieldY = right.y;
           fieldRadius = 70;
-          // Check if ball is within the arc's X range
           if (this.x - this.r < right.x - right.w / 2 && this.x + this.r > fieldX - fieldRadius) {
-            // Check approximate collision with the arc
             let distToCenter = dist(this.x, this.y, fieldX, fieldY);
             if (distToCenter < fieldRadius + this.r && distToCenter > fieldRadius - this.r) {
-              // Calculate angle from center of arc to ball
               let angleToBall = atan2(this.y - fieldY, this.x - fieldX);
-              // Only bounce if ball is moving towards the field and within the arc's "front"
               if (this.xspeed > 0 && (angleToBall > PI/2 || angleToBall < -PI/2)) {
-                this.xspeed *= -1; // Reverse X direction
-                // Optional: Adjust Y speed based on hit point on the arc
-                this.yspeed = (this.y - fieldY) * 0.1; // Example, can be more sophisticated
+                this.xspeed *= -1;
+                this.yspeed = (this.y - fieldY) * 0.1;
               }
             }
           }
@@ -317,9 +309,9 @@
 
       show() {
         if (ballFrozen) {
-          fill(100, 150, 255); // Blue tint when frozen
+          fill(100, 150, 255);
         } else if (ballSpeedMultiplier > 1) {
-          fill(255, 100, 100); // Red tint when in fireball mode
+          fill(255, 100, 100);
         } else {
           fill(255);
         }
@@ -335,7 +327,6 @@
       left = new Paddle(true);
       right = new Paddle(false);
 
-      // Initialize powerup cooldowns for both players
       leftPowerupCooldownEnd = millis() + POWERUP_COOLDOWN_DURATION;
       rightPowerupCooldownEnd = millis() + POWERUP_COOLDOWN_DURATION;
     }
@@ -350,20 +341,18 @@
         textSize(24);
         text("Rumble Pong!", GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50);
         textSize(16);
-        text("Click to Start!", GAME_WIDTH / 2, GAME_HEIGHT / 2); // Prompt user to click
+        text("Click to Start!", GAME_WIDTH / 2, GAME_HEIGHT / 2);
         textSize(12);
         text("Player 1: W/S   |   Player 2: I/K", GAME_WIDTH / 2, GAME_HEIGHT / 2 + 25);
-        text("Press Q and P for Powerups!", GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);
+        text("Press Q and P for Powerups!", GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);   
         return;
       }
 
-      // Update powerup cooldowns and effects
       updatePowerups();
 
       puck.checkPaddle(left);
       puck.checkPaddle(right);
 
-      // Check for force field collisions
       if (forceFieldActive.left) {
         puck.checkForceField('left');
       }
@@ -380,61 +369,62 @@
       right.show();
       puck.show();
 
-      // Draw UI
       drawUI();
 
-      // Draw active force fields
       if (forceFieldActive.left) {
         drawForceField(left.x + left.w / 2 + 50, left.y, 'left');
       }
       if (forceFieldActive.right) {
         drawForceField(right.x - right.w / 2 - 50, right.y, 'right');
       }
+      if(endgame){
+        setup();
+        if(winner=='left'){
+          text("RIGHT-SIDE WINS", GAME_WIDTH / 2, GAME_HEIGHT / 2);
+          textSize(100);
+        }
+        else if(winner=='right'){
+          text("LEFT-SIDE WINS", GAME_WIDTH / 2, GAME_HEIGHT / 2);
+          textSize(100);
+        }
+      }
     }
 
     function updatePowerups() {
       let currentTime = millis();
       
-      // Check and give powerup for Player 1
       if (leftStoredPowerup === null && currentTime >= leftPowerupCooldownEnd) {
         leftStoredPowerup = random(POWERUP_TYPES);
-        leftPowerupCooldownEnd = currentTime + POWERUP_COOLDOWN_DURATION; // Reset cooldown
+        leftPowerupCooldownEnd = currentTime + POWERUP_COOLDOWN_DURATION;
       }
 
-      // Check and give powerup for Player 2
       if (rightStoredPowerup === null && currentTime >= rightPowerupCooldownEnd) {
         rightStoredPowerup = random(POWERUP_TYPES);
-        rightPowerupCooldownEnd = currentTime + POWERUP_COOLDOWN_DURATION; // Reset cooldown
+        rightPowerupCooldownEnd = currentTime + POWERUP_COOLDOWN_DURATION;
       }
 
-      // Check if ball freeze should end
       if (ballFrozen && currentTime >= ballFrozenEndTime) {
         ballFrozen = false;
       }
 
-      // Check if fireball effect should end (ballSpeedMultiplier > 1 means it's active)
-      if (ballSpeedMultiplier > 1 && currentTime >= ballFrozenEndTime) { // Using ballFrozenEndTime for fireball as well
+      if (ballSpeedMultiplier > 1 && currentTime >= ballFrozenEndTime) {
         ballSpeedMultiplier = 1;
       }
 
-      // Check if paddle size effects should end for Player 1
       if (leftPowerupActive && currentTime >= leftPowerupEffectEndTime) {
         left.resetSize();
         leftPowerupActive = false;
       }
 
-      // Check if paddle size effects should end for Player 2
       if (rightPowerupActive && currentTime >= rightPowerupEffectEndTime) {
         right.resetSize();
         rightPowerupActive = false;
       }
 
-      // Check if Magic effect should end
       if (magicActive && currentTime >= magicEffectEndTime) {
         magicActive = false;
       }
 
-      // Check if Force Field effects should end
       if (forceFieldActive.left && currentTime >= forceFieldEffectEndTime.left) {
         forceFieldActive.left = false;
       }
@@ -442,7 +432,6 @@
         forceFieldActive.right = false;
       }
 
-      // Check if Broken Keyboard effects should end
       if (brokenKeyboardActive.left && currentTime >= brokenKeyboardEffectEndTime.left) {
         brokenKeyboardActive.left = false;
       }
@@ -469,14 +458,14 @@
             ballFrozenEndTime = currentTime + FIREBALL_DURATION;
             break;
           case 'xl':
-            left.resize(left.originalH * 1.5); // Make left paddle 50% larger
+            left.resize(left.originalH * 1.5);
             leftPowerupActive = true;
             leftPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'mini':
-            right.resize(right.originalH * 0.5); // Make right paddle 50% smaller
-            leftPowerupActive = true;
-            leftPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
+            right.resize(right.originalH * 0.2);
+            rightPowerupActive = true;
+            rightPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'magic':
             magicActive = true;
@@ -487,11 +476,11 @@
             forceFieldEffectEndTime.left = currentTime + FORCE_FIELD_DURATION;
             break;
           case 'brokenKeyboard':
-            brokenKeyboardActive.right = true; // Player 1 activates, Player 2's controls are reversed
+            brokenKeyboardActive.right = true;
             brokenKeyboardEffectEndTime.right = currentTime + BROKEN_KEYBOARD_DURATION;
             break;
         }
-        leftStoredPowerup = null; // Powerup consumed
+        leftStoredPowerup = null;
       } else if (player === 'right' && rightStoredPowerup) {
       if (powerupSounds[rightStoredPowerup]) {
         powerupSounds[rightStoredPowerup].play();
@@ -504,17 +493,17 @@
             break;
           case 'fireball':
             ballSpeedMultiplier = 2;
-            ballFrozenEndTime = currentTime + POWERUP_EFFECT_DURATION; // Use same timer for simplicity
+            ballFrozenEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'xl':
-            right.resize(right.originalH * 1.5); // Make right paddle 50% larger
+            right.resize(right.originalH * 1.5);
             rightPowerupActive = true;
             rightPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'mini':
-            left.resize(left.originalH * 0.5); // Make left paddle 50% smaller
-            rightPowerupActive = true;
-            rightPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
+            left.resize(left.originalH * 0.2);
+            leftPowerupActive = true;
+            leftPowerupEffectEndTime = currentTime + POWERUP_EFFECT_DURATION;
             break;
           case 'magic':
             magicActive = true;
@@ -525,30 +514,25 @@
             forceFieldEffectEndTime.right = currentTime + FORCE_FIELD_DURATION;
             break;
           case 'brokenKeyboard':
-            brokenKeyboardActive.left = true; // Player 2 activates, Player 1's controls are reversed
+            brokenKeyboardActive.left = true;
             brokenKeyboardEffectEndTime.left = currentTime + BROKEN_KEYBOARD_DURATION;
             break;
         }
-        rightStoredPowerup = null; // Powerup consumed
+        rightStoredPowerup = null;
       }
     }
-    //scores to be displayed from frontend
     function getLeftScore(){
       return leftscore;
     }
     function getRightScore(){
       return rightscore;
     }
-    //powerups to be displayed from frontend
     function getLeftStoredPowerup(){
       return leftStoredPowerup;
     }
     function getRightStoredPowerup(){
       return rightStoredPowerup;
     }
-    //powerup instructions to  be displayed from frontend (PRESS Q TO USE, PRESS P TO USE)
-
-    //powerup timers to be displayed from frontend 
     function getLeftTimeLeft(){
       return leftSeconds;
     }
@@ -556,7 +540,6 @@
       return rightSeconds;
     }
     function drawUI() {
-      // Scores
       fill(255);
       textAlign(LEFT);
       textSize(32);
@@ -565,12 +548,10 @@
       textAlign(RIGHT);
       text(rightscore, 467, 40);
 
-      // Draw powerup icons for each player
       drawPowerupIcon(leftStoredPowerup, 60, 100, 'left');
       drawPowerupIcon(rightStoredPowerup, GAME_WIDTH - 60, 100, 'right');
 
-      // Draw powerup instructions
-      fill(255, 255, 0); // Yellow color for instructions
+      fill(255, 255, 0);
       textAlign(LEFT);
       textSize(12);
       text("P1: Q to use", 20, 140);
@@ -579,10 +560,8 @@
       text("P2: P to use", GAME_WIDTH - 20, 140);
 
 
-      // Display individual powerup cooldown timers at the bottom
       let currentTime = millis();
 
-      // Player 1 Powerup Cooldown
       let leftTimeLeft = leftPowerupCooldownEnd - currentTime;
       let leftSeconds = Math.max(0, Math.ceil(leftTimeLeft / 1000));
       fill(0, 255, 0);
@@ -590,7 +569,6 @@
       textSize(16);
       text("P1 Next: " + leftSeconds + "s", 20, GAME_HEIGHT - 20);
 
-      // Player 2 Powerup Cooldown
       let rightTimeLeft = rightPowerupCooldownEnd - currentTime;
       let rightSeconds = Math.max(0, Math.ceil(rightTimeLeft / 1000));
       fill(0, 255, 0);
@@ -598,8 +576,7 @@
       textSize(16);
       text("P2 Next: " + rightSeconds + "s", GAME_WIDTH - 20, GAME_HEIGHT - 20);
 
-       // Display active powerup effects duration if any
-      fill(255, 150, 0); // Orange for active effects
+      fill(255, 150, 0);
 
       if (leftPowerupActive) {
         let timeLeft = leftPowerupEffectEndTime - currentTime;
@@ -624,7 +601,7 @@
         textSize(10);
         text("Time resumes after: " + seconds + "s", GAME_WIDTH / 2, GAME_HEIGHT - 50);
       } else if (ballSpeedMultiplier > 1 && !magicActive) {
-        let timeLeft = ballFrozenEndTime - currentTime; // Re-using for fireball duration
+        let timeLeft = ballFrozenEndTime - currentTime;
         let seconds = Math.max(0, Math.ceil(timeLeft / 1000));
         textAlign(CENTER);
         textSize(10);
@@ -672,65 +649,62 @@
     }
 
     function drawPowerupIcon(powerupType, x, y, player) {
-      // Only draw if there's a stored powerup
-      if (!powerupType) {
-        // Draw an empty slot if no powerup is stored
-        fill(30); // Darker fill for empty slot
-        stroke(100); // Lighter border
-        strokeWeight(2);
-        rect(x - 20, y - 20, 40, 40);
-        return; 
+        if (!powerupType) {
+          fill(30);
+          stroke(100);
+          strokeWeight(2);
+          rect(x - 20, y - 20, 40, 40);
+          return; 
+        }
+
+        if (powerupImages[powerupType]) {
+          let iconSize = 36;
+          let halfSize = iconSize / 2;
+          
+          image(powerupImages[powerupType], x - halfSize, y - halfSize, iconSize, iconSize);
+        } else {
+          noStroke();
+          switch (powerupType) {
+            case 'freeze':
+              fill(100, 150, 255);
+              break;
+            case 'fireball':
+              fill(255, 100, 100);
+              break;
+            case 'xl':
+              fill(100, 255, 100);
+              break;
+            case 'mini':
+              fill(255, 255, 100);
+              break;
+            case 'magic':
+              fill(200, 0, 200);
+              break;
+            case 'forcefield':
+              fill(0, 150, 255);
+              break;
+            case 'brokenKeyboard':
+              fill(255, 0, 0);
+              break;
+          }
+          rect(x - 18, y - 18, 36, 36);
+        }
+
+        fill(255);
+        textAlign(CENTER);
+        textSize(8);
+        text(powerupType.toUpperCase(), x, y + 30);
       }
-
-      // Draw powerup background
-      fill(50);
-      stroke(255);
-      strokeWeight(2);
-      rect(x - 20, y - 20, 40, 40);
-
-      // Draw powerup icon (colored squares as placeholders)
-      noStroke();
-      switch (powerupType) {
-        case 'freeze':
-          fill(100, 150, 255);
-          break;
-        case 'fireball':
-          fill(255, 100, 100);
-          break;
-        case 'xl':
-          fill(100, 255, 100);
-          break;
-        case 'mini':
-          fill(255, 255, 100);
-          break;
-        case 'magic':
-          fill(200, 0, 200); // Purple
-          break;
-        case 'forcefield':
-          fill(0, 150, 255); // Sky blue
-          break;
-        case 'brokenKeyboard':
-          fill(255, 0, 0); // Red for warning
-          break;
-      }
-      rect(x - 10, y - 10, 20, 20);
-
-      // Draw powerup name
-      fill(255);
-      textAlign(CENTER);
-      textSize(8);
-      text(powerupType.toUpperCase(), x, y + 30);
-    }
 
     function drawForceField(x, y, player) {
       push();
       noFill();
-      stroke(173, 216, 230); // Light blue color
+      stroke(173, 216, 230);
       strokeWeight(4);
       if (player === 'left') {
-        arc(x, y, 140, 140, -PI / 2, PI / 2); // Arc facing right
+        arc(x, y, 140, 140, -PI / 2, PI / 2);
       } else {
-        arc(x, y, 140, 140, PI / 2, 3 * PI / 2); // Arc facing left
+        arc(x, y, 140, 140, PI / 2, 3 * PI / 2);
       }
       pop();
     }
@@ -749,7 +723,6 @@
 
     function keyReleased() {
       if (gameStarted) {
-        // Stop paddle movement when key is released
         if (key.toUpperCase() === 'W' || key.toUpperCase() === 'S') {
             left.move(0);
         } else if (key.toUpperCase() === 'I' || key.toUpperCase() === 'K') {
@@ -762,40 +735,35 @@
       if (!gameStarted) return;
       let k = key.toUpperCase();
       
-      // Movement controls
       if (k === 'W') {
-        if (brokenKeyboardActive.left) left.move(10); // Reversed
+        if (brokenKeyboardActive.left) left.move(10);
         else left.move(-10);
       } else if (k === 'S') {
-        if (brokenKeyboardActive.left) left.move(-10); // Reversed
+        if (brokenKeyboardActive.left) left.move(-10);
         else left.move(10);
       } else if (k === 'I') {
-        if (brokenKeyboardActive.right) right.move(10); // Reversed
+        if (brokenKeyboardActive.right) right.move(10);
         else right.move(-10);
       } else if (k === 'K') {
-        if (brokenKeyboardActive.right) right.move(-10); // Reversed
+        if (brokenKeyboardActive.right) right.move(-10);
         else right.move(10);
       }
       
-      // Powerup activation
       else if (k === 'Q') activatePowerup('left');
       else if (k === 'P') activatePowerup('right');
     }
 
     function mousePressed() {
-      // Only trigger if we are still on the start screen
       if (showStartScreen) {
         if (!countdownStarted) {
-          countdown.play(); // Play the countdown sound
-          countdownStarted = true; // Mark that countdown has started
+          countdown.play();
+          countdownStarted = true;
           
-          // After the countdown, transition to gameStarted
           setTimeout(() => {
             showStartScreen = false;
             gameStarted = true;
-          }, 3000); // 4 seconds for the countdown
+          }, 3000);
         }
-        // Prevent multiple plays if user clicks rapidly
         return;
       }
     }
