@@ -14,27 +14,38 @@
 
 ```
 rumble-pong/
-├── Main Menu.html         # Main menu page with navigation and sound toggle
-├── pong.html              # Main game implementation using p5.js
-├── settings.html          # Settings page for controls and preferences
-├── LICENSE
-├── 📁Data
-│   ├── music.mp3          # Background music
-│   ├── volumeoff.png      # Volume icon (off)
-│   ├── volumeon.png       # Volume icon (on)
-│   ├── retro.mp4
-│   ├── ding.mp3
-│   └── powerup-icons/     # Folder for powerup icons
-│       ├── freeze.png
-│       ├── fireball.png
-│       └── shrink.png
-├── 📁js
-│   ├── pong.js            # Main game logic
-│   ├── menu.js            # Menu interactions
-│   └── settings.js        # Settings logic
-├── 📁css
-│   ├── style.css          # Main styles
-│   └── menu.css           # Menu styles
+├── blitz.html                 # Blitz game mode html file
+├── endless.html               # An endless game mode html file
+├── how_to_play.html           # Instructions and guide on how to play the game in an html file
+├── LICENSE                    # An open-source license for the project
+├── Main Menu.html             # The startup screen!
+├── mode menu.html             # Modes select menu
+├── settings.html              # Volume controls for the main menu music 
+├── standard.html              #
+├── OFL.txt                    # Open-source license for PressStart2P font
+├── README.MD
+├── 📁 data
+│   ├── music.mp3              # Background music for the main menu
+│   ├── volumeoff.png          # Volume icon (off)
+│   ├── volumeon.png           # Volume icon (on)
+│   ├── retro.mp4              # Background video for the main menu
+│   ├── PressStart2P.ttf       # Open-sourced retro font
+│   └── 📁 icons/                 # Folder for powerup icons
+│   │   ├── brokenKeyboard.png
+│   │   ├── fireball.png
+│   │   ├── forcefield.png
+│   │   ├── freeze.png
+│   │   ├── magic.png
+│   │   ├── mini.png
+│   │   └── xl.png
+│   └── 📁 sfx/                   # Folder for powerup sfx
+│       ├── brokenKeyboard.mp3
+│       ├── fireball.mp3
+│       ├── forcefield.mp3
+│       ├── freeze.mp3
+│       ├── magic.mp3
+│       ├── mini.mp3
+│       └── xl.mp3
 ```
 
 ## 🚀 Getting Started
